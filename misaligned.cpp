@@ -1,32 +1,45 @@
 #include <iostream>
-#include <cstring>
 #include <assert.h>
-#include <vector>
-#include <algorithm>
+#include <iomanip>
+#include <cstring>
+#include "misaligned.hpp"
 
-using namespace std;
-
-int printColorMap() {
-    const char* majorColors[] = {"White", "Red", "Black", "Yellow", "Violet"};
-    const char* minorColors[] = {"Blue", "Orange", "Green", "Brown", "Slate"};
-    int majorColorLen = (sizeof(majorColors) / sizeof(majorColors[0]));
-    int minorColorLen = (sizeof(minorColors) / sizeof(minorColors[0]));
-    vector<pair<string, string>> colorPair;
-    int i = 0, j = 0;
-    for(i = 0; i < majorColorLen; i++) {
-        for(j = 0; j < minorColorLen; j++) {
-            string majorColor = majorColors[i];
-            string minorColor = minorColors[i];
-            std::cout <<  i * 5 + j << " | " <<  majorColor << " | " <<  minorColor << "\n";
-            pair<string, string> toFind(majorColor, minorColor);
-            auto itr = std::find_if(colorPair.begin(), colorPair.end(), [&toFind](pair<string, string> p){
-               return p.first == toFind.first && p.second == toFind.second;
-            });
-            assert (itr != colorPair.end());
-            colorPair.emplace_back(make_pair(majorColor, minorColor));
+int getMaxWidth(const char* color[], int size) {
+    int maxLength = 0;
+    for (int i = 0; i < size; ++i)
+    {
+        int length = strlen(color[i]); 
+        if (maxLength < length)
+        {
+            maxLength = length;
         }
     }
-    
+    return maxLength;
+}
+
+int printColorMap() {
+    const char* majorColor[] = {"White", "Red", "Black", "Yellow", "Violet"};
+    const char* minorColor[] = {"Blue", "Orange", "Green", "Brown", "Slate"};
+
+    int numberOfMinorColors = sizeof(minorColor) / sizeof(minorColor[0]);
+    int numberOfMajorColors = sizeof(majorColor) / sizeof(majorColor[0]);
+
+    int maxMajorColorWidth = getMaxWidth(majorColor, numberOfMajorColors);
+    int maxMinorColorWidth = getMaxWidth(minorColor, numberOfMinorColors);
+
+    int i = 0, j = 0;
+    for(i = 0; i < 5; i++) {
+        for(j = 0; j < 5; j++) {
+            std::cout << std::left << std::setw(5) <<i * 5 + j + 1 << " | " << std::setw(maxMajorColorWidth) << majorColor[i]
+             << " | " << std::setw(maxMinorColorWidth)<< minorColor[j] << std::endl;
+
+            int PairNum = PairNumFromColorNum(i, j, numberOfMinorColors);
+
+            assert(PairNum == i * 5 + j + 1 ); 
+            assert(MajorColorFromPairNum(PairNum, numberOfMinorColors) == i);
+            assert(MinorColorFromPairNum(PairNum, numberOfMinorColors) == j);
+        }
+    }
     return i * j;
 }
 
