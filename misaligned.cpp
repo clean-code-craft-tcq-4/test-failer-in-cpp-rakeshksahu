@@ -28,8 +28,8 @@ int printColorMap() {
     int maxMinorColorWidth = getMaxWidth(minorColor, numberOfMinorColors);
 
     int i = 0, j = 0;
-    for(i = 0; i < 5; i++) {
-        for(j = 0; j < 5; j++) {
+    for(i = 0; i < numberOfMajorColors; i++) {
+        for(j = 0; j < numberOfMinorColors; j++) {
             std::cout << std::left << std::setw(5) <<i * 5 + j + 1 << " | " << std::setw(maxMajorColorWidth) << majorColor[i]
              << " | " << std::setw(maxMinorColorWidth)<< minorColor[j] << std::endl;
 
